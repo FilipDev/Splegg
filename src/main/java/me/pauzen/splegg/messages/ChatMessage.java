@@ -16,6 +16,7 @@ public enum ChatMessage implements Message {
     LEFT(ChatColor.RED + "Left the game of Splegg!"),
     LOST(ChatColor.RED + "You lost the game."),
     WON(ChatColor.GREEN + "You won the game."),
+    ABOUT_TO_START(ChatColor.YELLOW + "The game will start in %s seconds"),
     ;
 
     private String message;

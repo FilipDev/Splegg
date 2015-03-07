@@ -5,6 +5,8 @@
 package me.pauzen.splegg.arena;
 
 import me.pauzen.splegg.arena.events.RegisterArenasEvent;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +26,7 @@ public class ArenaManager {
 
     private Map<String, Arena> registeredArenas = new HashMap<>();
 
-    private Arena defaultArena = new Arena("Default Splegg Arena", , 2, 0);
+    private Arena defaultArena = new Arena("Default Splegg Arena", new Location(Bukkit.getWorld("world"), 0, 93, 0), 1, 100);
 
     public ArenaManager() {
         RegisterArenasEvent registerArenasEvent = new RegisterArenasEvent();
@@ -34,9 +36,8 @@ public class ArenaManager {
         registerArenasEvent.getArenas().forEach(this::registerArena);
 
         arenaGetter = (time) -> defaultArena;
-        
 
-
+        setCurrentArena(getArena());
     }
 
     private Function<Long, Arena> arenaGetter;

@@ -97,9 +97,4 @@ public class Tracker {
         return newTracker;
     }
 
-    public void display(CorePlayer corePlayer) {
-        corePlayer.setTrackerDisplayer(new TrackerDisplayer(corePlayer.getCurrentPlace(), corePlayer, this));
-    }
-
-
 }

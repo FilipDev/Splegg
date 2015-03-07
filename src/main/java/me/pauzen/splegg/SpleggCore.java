@@ -10,11 +10,11 @@ import me.pauzen.splegg.listeners.ListenerRegisterer;
 import me.pauzen.splegg.players.PlayerManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class SpleggSuckMyAss extends JavaPlugin {
+public class SpleggCore extends JavaPlugin {
 
-    private static SpleggSuckMyAss core;
+    private static SpleggCore core;
 
-    public static SpleggSuckMyAss getCore() {
+    public static SpleggCore getCore() {
         return core;
     }
 

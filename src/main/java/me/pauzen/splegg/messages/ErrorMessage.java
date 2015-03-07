@@ -14,6 +14,7 @@ public enum ErrorMessage implements Message {
 
     CONSOLESENDER("Command can only be sent by a player."),
     PERMISSIONS("No permissions for %s."),
+    NO_JOIN("You may not join this arena at this time."),
     ;
     
     private String errorMessage;

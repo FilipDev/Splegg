@@ -8,7 +8,7 @@
 
 package me.pauzen.splegg.listeners;
 
-import me.pauzen.splegg.SpleggSuckMyAss;
+import me.pauzen.splegg.SpleggCore;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -16,7 +16,7 @@ import org.bukkit.event.Listener;
 public abstract class ListenerImplementation implements Listener {
 
     public ListenerImplementation() {
-        Bukkit.getPluginManager().registerEvents(this, SpleggSuckMyAss.getCore());
+        Bukkit.getPluginManager().registerEvents(this, SpleggCore.getCore());
     }
 
     public void unregister(HandlerList handlerList) {

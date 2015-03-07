@@ -8,7 +8,7 @@
 
 package me.pauzen.splegg.players.data;
 
-import me.pauzen.alphacore.players.CorePlayer;
+import me.pauzen.splegg.players.CorePlayer;
 
 public abstract class Milestone {
 

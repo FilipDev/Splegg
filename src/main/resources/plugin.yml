@@ -1,0 +1,5 @@
+main: me.pauzen.splegg.SpleggCore
+name: Splegg
+version: 1.0
+author: Filip
+description: Splegg plugin.

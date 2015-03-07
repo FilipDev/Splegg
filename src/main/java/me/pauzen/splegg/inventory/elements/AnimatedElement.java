@@ -8,7 +8,7 @@
 
 package me.pauzen.splegg.inventory.elements;
 
-import me.pauzen.splegg.SpleggSuckMyAss;
+import me.pauzen.splegg.SpleggCore;
 import me.pauzen.splegg.inventory.InventoryMenu;
 import me.pauzen.splegg.inventory.elements.listeners.UpdateListener;
 import org.bukkit.Bukkit;
@@ -32,7 +32,7 @@ public class AnimatedElement extends Element {
     }
     
     public void startUpdating(long delay) {
-        Bukkit.getScheduler().runTaskTimer(SpleggSuckMyAss.getCore(), () -> inventoryMenu.getOpen().forEach((inventory) -> getListener().onUpdate(inventoryMenu, inventory)), 0L, delay);
+        Bukkit.getScheduler().runTaskTimer(SpleggCore.getCore(), () -> inventoryMenu.getOpen().forEach((inventory) -> getListener().onUpdate(inventoryMenu, inventory)), 0L, delay);
     }
 
     public UpdateListener getListener() {

@@ -30,7 +30,9 @@ public class Coordinate {
     }
 
     public static Coordinate fromSlot(int inventorySlot) {
-        return new Coordinate(inventorySlot % 9, inventorySlot / 9);
+        int x = Math.max(0, (inventorySlot) % 9);
+        int y = Math.max(0, inventorySlot / 9);
+        return new Coordinate(x, y);
     }
 
     @Override

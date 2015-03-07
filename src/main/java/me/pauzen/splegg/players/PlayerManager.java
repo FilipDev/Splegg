@@ -8,6 +8,7 @@
 
 package me.pauzen.splegg.players;
 
+import me.pauzen.splegg.arena.Arena;
 import me.pauzen.splegg.inventory.items.ItemBuilder;
 import me.pauzen.splegg.listeners.ListenerImplementation;
 import me.pauzen.splegg.misc.InvisibleID;
@@ -37,7 +38,7 @@ public class PlayerManager extends ListenerImplementation {
             registerPlayer(e.getPlayer());
             CorePlayer corePlayer = CorePlayer.get(e.getPlayer());
             
-            corePlayer.getPlayer().getInventory().setItem(35, ItemBuilder.from(Material.APPLE)
+            corePlayer.getPlayer().getInventory().setItem(36, ItemBuilder.from(Material.BEACON)
                                                                          .name("ArenaThing")
                                                                          .addLore("Use me to select an arena!")
                                                                          .addLore(InvisibleID.generate().getId())
@@ -69,6 +70,13 @@ public class PlayerManager extends ListenerImplementation {
     }
 
     public void destroyWrapper(Player player) {
+
+        CorePlayer corePlayer = CorePlayer.get(player);
+        if (corePlayer.isInArena()) {
+            Arena currentArena = corePlayer.getCurrentArena();
+            currentArena.lose(corePlayer);
+        }
+        
         this.players.remove(player.getUniqueId());
     }
 

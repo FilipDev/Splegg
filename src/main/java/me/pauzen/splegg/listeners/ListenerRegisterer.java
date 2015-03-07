@@ -13,6 +13,7 @@ public class ListenerRegisterer {
     public static void register() {
         new LandListener();
         new PlayerMoveListener();
+        new PlayerInteractListener();
     }
 
 }

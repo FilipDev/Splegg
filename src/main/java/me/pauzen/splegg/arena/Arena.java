@@ -4,11 +4,18 @@
 
 package me.pauzen.splegg.arena;
 
+import me.pauzen.splegg.SpleggCore;
+import me.pauzen.splegg.game.states.GameState;
 import me.pauzen.splegg.messages.ChatMessage;
+import me.pauzen.splegg.messages.ErrorMessage;
 import me.pauzen.splegg.misc.SoundUtils;
 import me.pauzen.splegg.players.CorePlayer;
+import me.pauzen.splegg.players.data.trackers.BlockDestroyTracker;
+import me.pauzen.splegg.players.data.trackers.ShouldDestroyBlockTracker;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +27,7 @@ public class Arena {
     private int pregameDelay;
     private String name;
     
-    private boolean started;
+    private GameState state;
 
     private Location spawnPoint;
 
@@ -32,9 +39,17 @@ public class Arena {
     }
 
     public void addPlayer(CorePlayer corePlayer) {
+        
+        if (state == GameState.CLOSED) {
+            ErrorMessage.NO_JOIN.sendMessage(corePlayer);
+            return;
+        }
+        
         players.add(corePlayer);
         ChatMessage.JOINED.sendMessage(corePlayer, name);
         SoundUtils.playSound(corePlayer, Sound.ORB_PICKUP, 6, 8);
+        
+        corePlayer.setCurrentArena(this);
         
         if (playerLimit == players.size()) {
             startGame();
@@ -42,21 +57,39 @@ public class Arena {
     }
 
     public void removePlayer(CorePlayer corePlayer) {
-        players.add(corePlayer);
+        
+        if (this.hasStarted()) {
+            lose(corePlayer);
+            return;
+        }
+        
+        players.remove(corePlayer);
         ChatMessage.LEFT.sendMessage(corePlayer);
         SoundUtils.playSound(corePlayer, Sound.ORB_PICKUP, 6, 3);
+
+        corePlayer.setCurrentArena(null);
     }
 
     public void startGame() {
         for (CorePlayer player : players) {
             player.setPreviousLocation(player.getPlayer().getLocation());
             player.getPlayer().teleport(spawnPoint);
+            ChatMessage.ABOUT_TO_START.sendMessage(player, String.valueOf(pregameDelay / 20));
+            
+            player.getTrackers().put("block_destroy", new BlockDestroyTracker());
+            player.getTrackers().put("should_destroy", new ShouldDestroyBlockTracker());
         }
-        this.started = true;
+
+        Bukkit.getScheduler().runTaskLater(SpleggCore.getCore(), () -> {
+            this.state = GameState.STARTED;
+            for (CorePlayer player : players) {
+                player.getPlayer().setVelocity(new Vector(0, (Math.random() * 0.5D) + 1, 0));
+            }
+        }, pregameDelay);
     }
 
     public void endGame() {
-        this.started = false;
+        this.state = GameState.CLOSED;
     }
     
     public void win(CorePlayer corePlayer) {
@@ -68,10 +101,11 @@ public class Arena {
     
     public void lose(CorePlayer corePlayer) {
         ChatMessage.LOST.sendMessage(corePlayer);
-        SoundUtils.playSound(corePlayer, Sound.ORB_PICKUP, 6, 5);
-        SoundUtils.playSound(corePlayer, Sound.ORB_PICKUP, 6, 2, 10);
+        SoundUtils.playSound(corePlayer, Sound.ORB_PICKUP, 6, 2);
+        SoundUtils.playSound(corePlayer, Sound.ORB_PICKUP, 6, 1, 3);
         revert(corePlayer);
-        
+        corePlayer.setCurrentArena(null);
+
         checkPlayers();
     }
     
@@ -83,11 +117,20 @@ public class Arena {
     
     public void revert(CorePlayer corePlayer) {
         corePlayer.getPlayer().teleport(corePlayer.getPreviousLocation());
+        corePlayer.getPlayer().setHealth(corePlayer.getPlayer().getMaxHealth());
         players.remove(corePlayer);
     }
 
     public boolean hasStarted() {
-        return started;
+        return GameState.STARTED == state;
+    }
+    
+    public void close() {
+        state = GameState.CLOSED;
+    }
+    
+    public GameState getState() {
+        return state;
     }
 
     public String getName() {

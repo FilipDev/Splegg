@@ -8,7 +8,7 @@
 
 package me.pauzen.splegg.misc;
 
-import me.pauzen.splegg.SpleggSuckMyAss;
+import me.pauzen.splegg.SpleggCore;
 import me.pauzen.splegg.players.CorePlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -38,7 +38,7 @@ public final class SoundUtils {
     }
 
     public static void playSound(CorePlayer corePlayer, Sound sound, float volume, float pitch, int delay) {
-        Bukkit.getScheduler().runTaskLater(SpleggSuckMyAss.getCore(), () -> {
+        Bukkit.getScheduler().runTaskLater(SpleggCore.getCore(), () -> {
             playSound(corePlayer, sound, volume, pitch);
         }, delay);
     }

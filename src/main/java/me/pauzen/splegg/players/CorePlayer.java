@@ -53,15 +53,15 @@ public class CorePlayer {
         this.previousLocation = previousLocation;
     }
 
-    public boolean isOnGround() {
-        return getPlayer().getLocation().subtract(0, -1.0D, 0).getBlock().getType().isSolid();
-    }
-
     public Map<String, Tracker> getTrackers() {
         return trackers;
     }
 
     public static CorePlayer get(Player player) {
         return PlayerManager.getManager().getWrapper(player);
+    }
+
+    public boolean isInArena() {
+        return currentArena != null;
     }
 }

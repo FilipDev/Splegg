@@ -14,7 +14,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class InvisibleID {
 
-    private static String HEADER = ChatColor.UNDERLINE + "" + ChatColor.STRIKETHROUGH + "" + ChatColor.BOLD;
+    private static String HEADER = ChatColor.UNDERLINE + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH;
 
     private String id;
 

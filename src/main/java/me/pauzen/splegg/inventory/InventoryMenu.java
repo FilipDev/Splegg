@@ -49,13 +49,13 @@ public abstract class InventoryMenu {
      * @param rows The desired amount of rows in the inventory.
      */
     public InventoryMenu(String name, int rows) {
+        this.name = name;
+        this.size = rows * 9;
+        endCoordinate = Coordinate.fromSlot(size - 1);
         inventoryID = InvisibleID.generate();
         registerElements();
         fillRemaining();
         InventoryManager.getManager().registerMenu(this);
-        this.name = name;
-        this.size = rows * 9;
-        endCoordinate = Coordinate.fromSlot(size);
     }
 
     public void openInventory(Player player, Inventory inventory) {
@@ -70,8 +70,14 @@ public abstract class InventoryMenu {
 
         Inventory inventory = Bukkit.createInventory(null, size, name + inventoryID.getId());
 
+        onOpen(CorePlayer.get(player));
+        
         elementMap.entrySet().forEach(entry -> {
 
+            if (entry.getKey() == null || entry.getValue() == null) {
+                return;
+            }
+            
             int i = entry.getKey().toSlot();
 
             if (entry.getValue() instanceof ToggleableElement) {
@@ -224,17 +230,16 @@ public abstract class InventoryMenu {
         int maxX = Math.max(coordinate1.getX(), coordinate2.getX());
         int maxY = Math.max(coordinate1.getY(), coordinate2.getY());
 
-        Coordinate[] coordinates = new Coordinate[(maxX - minX) * (maxY - minY)];
-        
+        Coordinate[] coordinates = new Coordinate[(maxX - minX + 1) * (maxY - minY + 1)];
+
         int curr = 0;
-        
-        for (int x = minX; x <= maxX; x++) {
-            for (int y = minY; y <= maxY; y++) {
+
+        for (int y = minY; y <= maxY; y++) {
+            for (int x = minX; x <= maxX; x++) {
                 coordinates[curr] = Coordinate.coordinate(x, y);
                 curr++;
             }
         }
-        
         return coordinates;
     }
     
@@ -246,22 +251,31 @@ public abstract class InventoryMenu {
         int maxX = Math.max(a.getX(), b.getX());
         int maxY = Math.max(a.getY(), b.getY());
 
-        Coordinate[] coordinates = new Coordinate[(maxX - minX) * 2 + (maxY - minX) * 2];
+        Coordinate[] coordinates = new Coordinate[(maxX - minX) * 2 + (maxY - minY) * 2];
 
         int curr = 0;
-        
-        for (Coordinate coordinate : getCoordinatesWithin(Coordinate.coordinate(minX, minY), Coordinate.coordinate(maxX, maxY))) {
-            if (coordinate.getX() == minX || coordinate.getX() == maxX) {
-                if (coordinate.getY() == minY || coordinate.getY() == maxY) {
-                    coordinates[curr] = coordinate;
-                }
-            }
 
+        for (Coordinate coordinate : getCoordinatesWithin(Coordinate.coordinate(minX, minY), Coordinate.coordinate(minX, maxY))) {
+            coordinates[curr] = coordinate;
             curr++;
         }
-        
+
+        for (Coordinate coordinate : getCoordinatesWithin(Coordinate.coordinate(maxX, minY), Coordinate.coordinate(maxX, maxY))) {
+            coordinates[curr] = coordinate;
+            curr++;
+        }
+
+        for (Coordinate coordinate : getCoordinatesWithin(Coordinate.coordinate(minX + 1, maxY), Coordinate.coordinate(maxX - 1, maxY))) {
+            coordinates[curr] = coordinate;
+            curr++;
+        }
+
+        for (Coordinate coordinate : getCoordinatesWithin(Coordinate.coordinate(minX + 1, minY), Coordinate.coordinate(maxX - 1, minY))) {
+            coordinates[curr] = coordinate;
+            curr++;
+        }
+
         return coordinates;
-        
     }
 
     /**
