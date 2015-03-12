@@ -4,15 +4,17 @@
 
 package me.pauzen.splegg.listeners;
 
+import me.pauzen.alphacore.inventory.InventoryMenu;
+import me.pauzen.alphacore.inventory.elements.AnimatedElement;
+import me.pauzen.alphacore.inventory.elements.Element;
+import me.pauzen.alphacore.inventory.elements.InteractableElement;
+import me.pauzen.alphacore.inventory.items.ItemBuilder;
+import me.pauzen.splegg.SpleggCore;
 import me.pauzen.splegg.arena.ArenaManager;
-import me.pauzen.splegg.inventory.InventoryMenu;
-import me.pauzen.splegg.inventory.elements.AnimatedElement;
-import me.pauzen.splegg.inventory.elements.Element;
-import me.pauzen.splegg.inventory.elements.InteractableElement;
-import me.pauzen.splegg.inventory.items.ItemBuilder;
 import me.pauzen.splegg.misc.GeneralUtils;
 import me.pauzen.splegg.misc.InvisibleID;
 import me.pauzen.splegg.players.CorePlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -36,7 +38,7 @@ public class PlayerInteractListener extends ListenerImplementation {
                     }, ItemBuilder.from(Material.INK_SACK)
                                   .name("Join the Arena!")
                                   .durability(10)
-                                  .addLore("Click here to join the current arena.")
+                                  .lore("Click here to join the current arena.")
                                   .build())
             );
 
@@ -45,14 +47,14 @@ public class PlayerInteractListener extends ListenerImplementation {
                     }, ItemBuilder.from(Material.INK_SACK)
                                   .name("Leave the currently joined arena.")
                                   .durability(1)
-                                  .addLore("Click here to leave the current arena.")
+                                  .lore("Click here to leave the current arena.")
                                   .build())
             );
         }
 
         @Override
-        public void onOpen(CorePlayer corePlayer) {
-            setElementAt(4, 2, new Element(ItemBuilder.from(Material.INK_SACK).name(corePlayer.isInArena() ? ChatColor.GREEN + "You are in the arena " + corePlayer.getCurrentArena().getName() + "." : ChatColor.RED + "You are not currently in an arena.").durability(corePlayer.isInArena() ? 10 : 1).build()));
+        public void onOpen(me.pauzen.alphacore.players.CorePlayer corePlayer) {
+            setElementAt(4, 2, new Element(ItemBuilder.from(Material.INK_SACK).name(CorePlayer.get(corePlayer.getPlayer()).isInArena() ? ChatColor.GREEN + "You are in the arena " + CorePlayer.get(corePlayer.getPlayer()).getCurrentArena().getName() + "." : ChatColor.RED + "You are not currently in an arena.").durability(CorePlayer.get(corePlayer.getPlayer()).isInArena() ? 10 : 1).build()));
         }
     };
 
@@ -68,38 +70,45 @@ public class PlayerInteractListener extends ListenerImplementation {
             return;
         }
 
+        if (CorePlayer.get(e.getPlayer()).isInArena()) {
+
+            if (item.getType() == Material.ARROW) {
+
+                e.getPlayer().sendMessage(ChatColor.BLUE + "gotta go fast");
+                new PotionEffect(PotionEffectType.SPEED, 60, 3).apply(e.getPlayer());
+
+                System.out.println(item.getAmount());
+
+                if (item.getAmount() - 1 == 0) {
+                    item.setType(Material.AIR);
+                    return;
+                }
+                item.setAmount(item.getAmount() - 1);
+            }
+
+            if (item.getType() == Material.BONE) {
+                CorePlayer.get(e.getPlayer()).getTrackers().get("should_destroy").setValue(0);
+                e.getPlayer().sendMessage(ChatColor.GREEN + "You stop breaking blocks for 3 seconds.");
+                Bukkit.getScheduler().runTaskLater(SpleggCore.getCore(), () -> {
+                    e.getPlayer().sendMessage(ChatColor.RED + "Your trail is deadly once again.");
+                    CorePlayer.get(e.getPlayer()).getTrackers().get("should_destroy").setValue(1);
+                }, 60);
+                
+                if (item.getAmount() - 1 == 0) {
+                    item.setType(Material.AIR);
+                    return;
+                }
+                
+                item.setAmount(item.getAmount() - 1);
+            }
+        }
+
         if (!item.hasItemMeta()) {
             return;
         }
 
         if (!item.getItemMeta().hasLore()) {
             return;
-        }
-
-        if (CorePlayer.get(e.getPlayer()).isInArena()) {
-
-            if (InvisibleID.hasInvisibleID(getItemName(item))) {
-                if (item.getType() == Material.ARROW) {
-                    item.setAmount(item.getAmount() - 1);
-                    if (item.getAmount() == 0) {
-                        item.setType(Material.AIR);
-                        return;
-                    }
-
-                    new  PotionEffect(PotionEffectType.SPEED, 3, 1).apply(e.getPlayer());
-                }
-                
-                if (item.getType() == Material.BONE) {
-                    item.setAmount(item.getAmount() - 1);
-                    if (item.getAmount() == 0) {
-                        item.setType(Material.AIR);
-                        return;
-                    }
-                    
-                    
-                }
-                
-            }
         }
 
         if ((item.getItemMeta().getLore().size() < 2)) {

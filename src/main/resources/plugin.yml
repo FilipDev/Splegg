@@ -2,4 +2,5 @@ main: me.pauzen.splegg.SpleggCore
 name: Splegg
 version: 1.0
 author: Filip
+depends: [AlphaCore]
 description: Splegg plugin.

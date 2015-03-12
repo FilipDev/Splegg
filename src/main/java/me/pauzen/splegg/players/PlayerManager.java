@@ -8,8 +8,8 @@
 
 package me.pauzen.splegg.players;
 
+import me.pauzen.alphacore.inventory.items.ItemBuilder;
 import me.pauzen.splegg.arena.Arena;
-import me.pauzen.splegg.inventory.items.ItemBuilder;
 import me.pauzen.splegg.listeners.ListenerImplementation;
 import me.pauzen.splegg.misc.InvisibleID;
 import org.bukkit.Material;
@@ -40,8 +40,8 @@ public class PlayerManager extends ListenerImplementation {
             
             corePlayer.getPlayer().getInventory().setItem(36, ItemBuilder.from(Material.BEACON)
                                                                          .name("ArenaThing")
-                                                                         .addLore("Use me to select an arena!")
-                                                                         .addLore(InvisibleID.generate().getId())
+                                                                         .lore("Use me to select an arena!")
+                                                                         .lore(InvisibleID.generate().getId())
                                                                          .build());
         }
     }

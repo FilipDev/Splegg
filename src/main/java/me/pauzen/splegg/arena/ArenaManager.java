@@ -26,7 +26,7 @@ public class ArenaManager {
 
     private Map<String, Arena> registeredArenas = new HashMap<>();
 
-    private Arena defaultArena = new Arena("Default Splegg Arena", new Location(Bukkit.getWorld("world"), 0, 93, 0), 1, 100);
+    private Arena defaultArena = new Arena("Default Splegg Arena", new Location(Bukkit.getWorld("world"), 0, 93, 0), 2, 100);
 
     public ArenaManager() {
         RegisterArenasEvent registerArenasEvent = new RegisterArenasEvent();

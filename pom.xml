@@ -16,18 +16,20 @@
             <artifactId>spigot</artifactId>
             <version>1649_Patch20141001a</version>
         </dependency>
-        
+
         <dependency>
             <groupId>me.pauzen.alphacore</groupId>
             <artifactId>AlphaCore</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>C:/Users/Administrator/.m2/repository/me/pauzen/alphacore/AlphaCore/1.0-SNAPSHOT/AlphaCore-1.0-SNAPSHOT.jar</systemPath>
         </dependency>
     </dependencies>
     
     <groupId>me.pauzen.splegg</groupId>
     <artifactId>Splegg</artifactId>
     <version>1.0-SNAPSHOT</version>
-    
+
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>

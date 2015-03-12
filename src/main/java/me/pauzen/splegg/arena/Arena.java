@@ -14,7 +14,9 @@ import me.pauzen.splegg.players.data.trackers.BlockDestroyTracker;
 import me.pauzen.splegg.players.data.trackers.ShouldDestroyBlockTracker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -75,15 +77,22 @@ public class Arena {
             player.setPreviousLocation(player.getPlayer().getLocation());
             player.getPlayer().teleport(spawnPoint);
             ChatMessage.ABOUT_TO_START.sendMessage(player, String.valueOf(pregameDelay / 20));
-            
+
+            ShouldDestroyBlockTracker shouldDestroyBlockTracker = new ShouldDestroyBlockTracker();
+            shouldDestroyBlockTracker.setBoolean(false);
+
             player.getTrackers().put("block_destroy", new BlockDestroyTracker());
-            player.getTrackers().put("should_destroy", new ShouldDestroyBlockTracker());
+            player.getTrackers().put("should_destroy", shouldDestroyBlockTracker);
+            
+            player.getPlayer().getInventory().addItem(new ItemStack(Material.BONE, 2));
+            player.getPlayer().getInventory().addItem(new ItemStack(Material.ARROW, 2));
         }
 
         Bukkit.getScheduler().runTaskLater(SpleggCore.getCore(), () -> {
             this.state = GameState.STARTED;
             for (CorePlayer player : players) {
                 player.getPlayer().setVelocity(new Vector(0, (Math.random() * 0.5D) + 1, 0));
+                player.getTrackers().get("should_destroy").setValue(1);
             }
         }, pregameDelay);
     }

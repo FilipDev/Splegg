@@ -100,9 +100,10 @@ public class LandListener extends ListenerImplementation {
             }
         }
 
-        if (corePlayer.)
-        destroyBlocks(relative);
-        updateTracker(corePlayer);
+        if (corePlayer.getTrackers().get("should_destroy").getValue() == 1) {
+            destroyBlocks(relative);
+            updateTracker(corePlayer);
+        }
     }
     
     /*

@@ -5,7 +5,6 @@
 package me.pauzen.splegg;
 
 import me.pauzen.splegg.arena.ArenaManager;
-import me.pauzen.splegg.inventory.InventoryManager;
 import me.pauzen.splegg.listeners.ListenerRegisterer;
 import me.pauzen.splegg.players.PlayerManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -33,7 +32,6 @@ public class SpleggCore extends JavaPlugin {
     }
 
     private void registerManagers() {
-        InventoryManager.register();
         ListenerRegisterer.register();
         ArenaManager.register();
         PlayerManager.register();
